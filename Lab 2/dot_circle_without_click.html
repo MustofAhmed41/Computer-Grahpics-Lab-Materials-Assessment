@@ -1,0 +1,104 @@
+<html>
+<title>Assignment - 1 | Spiral</title>
+<canvas id="webglcanvas" width="500" height="500"></canvas>
+
+<script>
+
+    var canvas = document.getElementById("webglcanvas"); 
+    var  gl = canvas.getContext("webgl");
+
+    var vertexShaderSource =
+	
+       `attribute vec3 a_coords;
+        
+		void main() {
+            gl_Position = vec4(a_coords, 1.0);
+			gl_PointSize = 4.0;
+		}`;
+
+	var fragmentShaderSource =	
+		
+       `
+	   void main() {
+			gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+		}`;
+
+    var vsh = gl.createShader( gl.VERTEX_SHADER );
+    gl.shaderSource( vsh, vertexShaderSource );
+    gl.compileShader( vsh );
+	
+    var fsh = gl.createShader( gl.FRAGMENT_SHADER );
+    gl.shaderSource( fsh, fragmentShaderSource );
+    gl.compileShader( fsh );
+    
+    var prog = gl.createProgram(); 
+    
+    gl.attachShader( prog, vsh ); 
+    gl.attachShader( prog, fsh );
+    gl.linkProgram( prog ); 
+    gl.useProgram(prog); 
+
+    var a_coords_location = gl.getAttribLocation(prog, "a_coords");
+	
+	
+	
+	var arr = new Array();
+	
+	var i = 0.0, w = 0.20; 
+	for(; i <= Math.PI*2; i = i + 0.15)
+	{		
+		arr.push(Math.cos(i)*w);
+		arr.push(Math.sin(i)*w);
+		arr.push(0.0);		
+	}
+	
+	i = 0.0, w = 0.30;
+	for(; i <= Math.PI*2; i = i + 0.17)
+	{		
+		arr.push(Math.cos(i)*w);
+		arr.push(Math.sin(i)*w);
+		arr.push(0.0);		
+	}
+
+	i = 0.0, w = 0.40;
+	for(; i <= Math.PI*2; i = i + 0.20)
+	{		
+		arr.push(Math.cos(i)*w);
+		arr.push(Math.sin(i)*w);
+		arr.push(0.0);		
+	}
+
+	i = 0.0, w = 0.50;
+	for(; i <= Math.PI*2; i = i + 0.30)
+	{		
+		arr.push(Math.cos(i)*w);
+		arr.push(Math.sin(i)*w);
+		arr.push(0.0);		
+	}
+	
+	
+	var coords = new Float32Array(arr);
+	
+	
+    var a_coords_buffer = gl.createBuffer(); 
+    gl.bindBuffer(gl.ARRAY_BUFFER, a_coords_buffer); 
+    gl.bufferData(gl.ARRAY_BUFFER, coords, gl.STATIC_DRAW); 
+    gl.vertexAttribPointer(a_coords_location, 3, gl.FLOAT, false, 0, 0); 
+    gl.enableVertexAttribArray(a_coords_location);
+	
+	gl.clearColor(1.0, 1.0, 0.85, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.POINTS, 0, 500); 
+	
+
+	i = 0.0, w = 0.20;
+	canvas.onmousedown = function ()
+	{				
+		
+    };
+
+</script>
+
+
+
+</html>

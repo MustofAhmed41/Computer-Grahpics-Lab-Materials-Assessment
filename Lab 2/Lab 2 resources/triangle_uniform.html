@@ -1,0 +1,82 @@
+<!-- saved from url=(0065)http://math.hws.edu/graphicsbook/source/webgl/simple-texture.html -->
+<!-- modified by Mohammad Imrul Jubair -->
+
+<html>
+<title>LAB-2: Uniform</title>
+<canvas id="webglcanvas" width="500" height="500"></canvas>
+
+<script>
+
+    var canvas = document.getElementById("webglcanvas"); 
+    var  gl = canvas.getContext("webgl");
+	
+	
+    var vertexShaderSource =
+       `attribute vec3 a_coords;
+        void main() {
+            gl_Position = vec4(a_coords, 1.0);
+        }`;
+
+
+	//u_color will be the rgb variable
+	//uniform is parameter which means per primitive, that is per shape. When we set a single color to a triangle,
+	// it remains same for a shape
+	//we have to bind u_color to u_color_location, we can change u_color_location. To access u_color_location, we have to bind it 
+	//to a variable named color and then bind it to u_color_location, then u_color_location changes u_color
+	//long story short, color -> u_color_location -> u_color
+	
+	//for uniform color, we don't have to change the color, they remain constant as we 
+	//initialize, so we don't need buffer for constant color.
+	
+	
+	//per vertex is the one which changes. Per point
+	
+	//mediump means working with medium precision, there are high/low precision for floating points.
+	//precision mediump // by this line we are setting medium precision for float.
+	var fragmentShaderSource =
+
+       `precision mediump float;
+        uniform vec3 u_color;
+        void main() {
+            gl_FragColor = vec4(u_color, 1.0);
+        }`;
+
+    var vsh = gl.createShader( gl.VERTEX_SHADER );
+    gl.shaderSource( vsh, vertexShaderSource );
+    gl.compileShader( vsh );
+	
+    var fsh = gl.createShader( gl.FRAGMENT_SHADER );
+    gl.shaderSource( fsh, fragmentShaderSource );
+    gl.compileShader( fsh );
+    
+    var prog = gl.createProgram(); 
+    
+    gl.attachShader( prog, vsh ); 
+    gl.attachShader( prog, fsh );
+    gl.linkProgram( prog ); 
+    gl.useProgram(prog); 
+
+    var a_coords_location = gl.getAttribLocation(prog, "a_coords");
+
+
+    var coords = new Float32Array( [0.0, 0.0, 0.0,
+									0.0, 0.5, 0.0,
+									0.5, 0.0, 0.0] );
+
+    var a_coords_buffer = gl.createBuffer(); 
+    gl.bindBuffer(gl.ARRAY_BUFFER, a_coords_buffer); 
+    gl.bufferData(gl.ARRAY_BUFFER, coords, gl.STATIC_DRAW); 
+    gl.vertexAttribPointer(a_coords_location, 3, gl.FLOAT, false, 0, 0); 
+    gl.enableVertexAttribArray(a_coords_location);
+	
+	var u_color_location = gl.getUniformLocation(prog, "u_color");
+	var color = new Float32Array( [0.5, 0.7, 0.3] );
+	gl.uniform3fv(u_color_location,  color);
+	//3fv means 3 floating vector. there are other methods for sending intergers/matrixes etc
+	
+	gl.clearColor(0.75, 0.75, 0.75, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 3); 
+
+</script>
+</html>
